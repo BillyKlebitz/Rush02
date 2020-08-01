@@ -21,15 +21,29 @@ t_list *create_list(char *key, char *value)
 	return (item);
 }
 
-int str_len(char *str)
+int	ft_strlen(char *str)
 {
-	int i;
-	
-	i = 0;
-	while (str[i] != '\n')
-		i++;
-	return (i);
+	const char *a = str;
+
+	while (*str)
+		++str;
+	return (str - a);
 }
+
+int		ft_strcmp(char *s1, char *s2)
+{
+	while (*s1 != '\0' || *s2 != '\0')
+	{
+		if (*s1 != *s2)
+		{
+			return (unsigned char *)s1 - (unsigned char *)s2;
+		}
+		s1++;
+		s2++;	
+	}
+	return (0);
+}
+
 
 t_list *edit_str(char *str)
 {
@@ -42,27 +56,23 @@ t_list *edit_str(char *str)
 	j = 0;
 	key = (char *)malloc(sizeof(char) * 1000);
 	value = (char *)malloc(sizeof(char) * 1000);
-	while (str[i] != ':')
+	while (str[i] >= '0' && str[i] <= '9')
 	{
 		key[i] = str[i];
 		i++;
 	}
 	key[i] = '\0';
-	i += 2;
+	i++;
 	while (str[i] != '\n')
-	{
+	{	
+		while (str[i] == ' ' || str[i] == ':')
+			i++;
 		value[j] = str[i];
 		i++;
 		j++;
 	}
 	value[j] = '\0';
-	//printf("%s\n", key);
-	//printf("%s\n", value);
-	
 	return (create_list(key, value));
-	
-//	free(key);
-//	free(value);
 }
 
 void clean_str(char *str)
@@ -84,6 +94,28 @@ void print_list(t_list *p)
 		print_list(p->next);
 }
 
+void result(char *argv, t_list *begin)
+{
+	t_list *node = begin;
+	while(node)
+	{
+		if(
+
+
+		if(ft_strlen(argv) == ft_strlen(node->key) && ft_strlen(node->key) > 2)
+		{
+			result(argv[0], begin);
+			write(1,node->value, ft_strlen(node->value));
+			argv++;
+			result(argv, begin);
+			//return ;
+		}
+		else
+			node = node->next;
+	}
+
+}	
+
 int main(int argc, char **argv)
 {
 	int fd;
@@ -96,11 +128,9 @@ int main(int argc, char **argv)
 	t_list *node = NULL;
 	t_list *begin;
 	
-	//begin = node;
-	(void)argv;
 	i = 0;
 	j = 0;
-	if (argc == 1)
+	if (argc > 0 )
 	{
 		fd = open("numbers.dict", O_RDONLY);
 		size = read(fd,buffer,4096);
@@ -114,7 +144,7 @@ int main(int argc, char **argv)
 				j++;
 				i++;
 			}
-			str[i+1] = '\0';
+			str[j] = '\0';
 			i++;
 			if(node == NULL)
 			{
@@ -128,7 +158,8 @@ int main(int argc, char **argv)
 			}
 			clean_str(str);
 		}	
-		print_list(begin);
+		//print_list(begin);
+		result(argv[1], begin);
 	}
 	return (0);
 }
